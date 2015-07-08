@@ -340,7 +340,13 @@ function Engine:requireComponents(path)
     end
     local finishedList
     for index, filePath in ipairs(fileList) do
-        if string.math(filePath, "Components/") then
+        print(filePath)
+        if string.match(filePath, ".lua") then
+            local wordIndex = string.find(filePath, 'components')
+            local extensionIndex = string.find(filePath, '.lua')
+            filePath = string.sub(filePath, wordIndex, extensionIndex-
+            )
+            print(filePath)
             require(filePath)
         end
     end
