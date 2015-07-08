@@ -6,7 +6,7 @@ end
 
 Engine = class("Engine")
 
-function Engine:__init() 
+function Engine:__init()
     self.entities = {}
     self.rootEntity = Entity()
     self.singleRequirements = {}
@@ -58,7 +58,7 @@ function Engine:addEntity(entity)
             end
         end
     end
-end 
+end
 
 function Engine:removeEntity(entity, removeChildren, newParent)
     -- Removing the Entity from all Systems and engine
@@ -121,7 +121,7 @@ function Engine:addSystem(system, typ)
         return
     end
     -- Adding System to engine system reference table
-    if not (self.systemRegistry[system.__name]) then 
+    if not (self.systemRegistry[system.__name]) then
         self:registerSystem(system)
     -- This triggers if the system doesn't have update and draw and it's already existing.
     elseif not (system.update and system.draw) then
@@ -266,7 +266,7 @@ function Engine:componentRemoved(event)
 
     -- Removing Entity from old systems
     if self.allRequirements[component] then
-        for index, system in pairs(self.allRequirements[component]) do 
+        for index, system in pairs(self.allRequirements[component]) do
             system:removeEntity(entity, component)
         end
     end
@@ -323,13 +323,26 @@ function Engine:checkRequirements(entity, system)
                 end
             end
             if meetsrequirements == true then
-                category = index 
+                category = index
                 system:addEntity(entity, category)
             end
         end
     end
     if meetsrequirements == true and category == nil then
         system:addEntity(entity)
+    end
+end
+
+function Engine:requireComponents(path)
+    local fileList, popen = {}, io.popen
+    for filePath in popen('find '.. path ..' -name "*.lua"'):lines() do
+        table.insert(fileList, filePath)
+    end
+    local finishedList
+    for index, filePath in ipairs(fileList) do
+        if string.math(filePath, "Components/") then
+            require(filePath)
+        end
     end
 end
 
