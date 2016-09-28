@@ -30,16 +30,22 @@ function System:removeEntity(entity, component)
     -- In case it is an Entity, we know that this System doesn't have multiple
     -- Requirements. Otherwise we remove the Entity from each category.
     local firstElement = lovetoys.util.firstElement(self.targets)
+
     if firstElement then
         if firstElement.class and firstElement.class.name == 'Entity' then
+            local target = self.targets[entity.id]
+            if self.onRemoveEntity then self:onRemoveEntity(target) end
             self.targets[entity.id] = nil
         else
             -- Removing entities from their respective category target list.
             for index, _ in pairs(self.targets) do
+                local target = self.targets[index][entity.id]
+                if self.onRemoveEntity then self:onRemoveEntity(target) end
                 self.targets[index][entity.id] = nil
             end
         end
     end
+
 end
 
 function System:componentRemoved(entity, component)
